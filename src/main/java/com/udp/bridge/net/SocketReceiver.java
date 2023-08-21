@@ -14,10 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SocketReceiver extends Thread {
     private BlockingQueue<byte[]> socketToMQQueue;
     private Socket cliSock;
+    private Thread peer;
     
-    public SocketReceiver(BlockingQueue<byte[]> socketToMQQueue, Socket cliSock) {
+    public SocketReceiver(BlockingQueue<byte[]> socketToMQQueue, Socket cliSock, Thread peer) {
         this.socketToMQQueue = socketToMQQueue;
         this.cliSock = cliSock;
+        this.peer = peer;
     }
 
     private byte[] stripHeader(byte[] message) {
@@ -52,5 +54,6 @@ public class SocketReceiver extends Thread {
     		log.error(getName() + "| Exception: " + e.getMessage());
     		e.printStackTrace();
     	}
+    	peer.interrupt();
     }
 }

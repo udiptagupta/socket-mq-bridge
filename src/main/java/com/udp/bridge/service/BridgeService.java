@@ -52,8 +52,8 @@ public class BridgeService {
 				log.debug("Received connection from " + cliSocket.getInetAddress().getHostAddress());
 				// hand over connection to client handler thread
 				
-				SocketReceiver socketReceiver = new SocketReceiver(socketToMQQueue, cliSocket);
 				SocketSender socketSender = new SocketSender(MQToSocketQueue, cliSocket);
+				SocketReceiver socketReceiver = new SocketReceiver(socketToMQQueue, cliSocket, socketSender);
 
 				socketReceiver.start();
 				socketSender.start();

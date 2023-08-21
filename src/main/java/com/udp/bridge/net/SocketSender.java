@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.udp.bridge.utils.ApplicationUtils;
 
@@ -35,7 +36,7 @@ public class SocketSender extends Thread {
 	        while (true) {
             	if(cliSock.isConnected()) {
             		// Dequeue a message from MQToSocketQueue and send it back to the socket interface.
-            		byte[] message = MQToSocketQueue.take();
+            		byte[] message = MQToSocketQueue.poll(500, TimeUnit.MILLISECONDS);
             		String outString = ApplicationUtils.byteArrayToString(message);
             		byte[] outMsg = addHeader(outString.getBytes());
             		dos.write(outMsg);
