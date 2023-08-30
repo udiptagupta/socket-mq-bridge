@@ -10,8 +10,8 @@
             <PatternLayout pattern="${LOG_PATTERN}" />
         </Console>
         <RollingFile name="appLog"
-                fileName="${APP_LOG_ROOT}/socket-mq-bridge.log"
-                filePattern="${APP_LOG_ROOT}/socket-mq-bridge-%d{yyyy-MM-dd}-%i.log">
+                fileName="${APP_LOG_ROOT}/bridge-app.log"
+                filePattern="${APP_LOG_ROOT}/bridge-app-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="${LOG_PATTERN}" />
             <Policies>
                 <SizeBasedTriggeringPolicy size="20MB" />

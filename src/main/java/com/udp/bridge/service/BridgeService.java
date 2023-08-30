@@ -41,19 +41,20 @@ public class BridgeService {
 			svrSocket = new ServerSocket(port, 200);
 			svrSocket.setReuseAddress(true);
 			
-		//	MQReceiver mqReceiver = new IbmMQReceiver(MQToSocketQueue, appConfig);
-		//	MQSender mqSender = new IbmMQSender(socketToMQQueue, appConfig);
+			MQReceiver mqReceiver = new IbmMQReceiver(MQToSocketQueue, appConfig);
+			MQSender mqSender = new IbmMQSender(socketToMQQueue, appConfig);
 
-		//	mqReceiver.start();
-		//	mqSender.start();
+			mqReceiver.start();
+			mqSender.start();
 			
 			while(true) {
 				log.debug("Waiting for client on port " + svrSocket.getLocalPort());
 				cliSocket = svrSocket.accept();
 				
+				// New connection is expected only if there is no existing socket connection or existing socket connection has already terminated.
 				log.debug("Received connection from " + cliSocket.getInetAddress().getHostAddress());
+
 				// hand over connection to client handler thread
-				
 				SocketSender socketSender = new SocketSender(MQToSocketQueue, cliSocket);
 				SocketReceiver socketReceiver = new SocketReceiver(socketToMQQueue, cliSocket, socketSender);
 
