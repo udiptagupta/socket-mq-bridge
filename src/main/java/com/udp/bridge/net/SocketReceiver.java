@@ -12,14 +12,14 @@ import org.apache.logging.log4j.Logger;
 import com.udp.bridge.utils.ApplicationUtils;
 
 
-public class SocketReceiver extends Thread {
+public class SocketReceiver implements Runnable {
     private BlockingQueue<byte[]> socketToMQQueue;
     private Socket cliSock;
-    private Thread peer;
+    private SocketSender peer;
     
     Logger log = LogManager.getLogger(SocketReceiver.class);
     
-    public SocketReceiver(BlockingQueue<byte[]> socketToMQQueue, Socket cliSock, Thread peer) {
+    public SocketReceiver(BlockingQueue<byte[]> socketToMQQueue, Socket cliSock, SocketSender peer) {
         this.socketToMQQueue = socketToMQQueue;
         this.cliSock = cliSock;
         this.peer = peer;
@@ -33,30 +33,32 @@ public class SocketReceiver extends Thread {
     @Override
     public void run() {
     	
-    	log.debug("Starting " + this.getName());
+    	log.debug("Starting Socket receiver on " + cliSock.toString() );
     	
     	try {
     		DataInputStream dis =  new DataInputStream(new BufferedInputStream(cliSock.getInputStream()));
     		byte[] message = new byte[512];
     		while (dis.read(message) > -1) {
     			String inMessage = ApplicationUtils.byteArrayToString(message);
-    			log.debug(getName() + "| Received " + inMessage.length() + " bytes of request [" + inMessage + "]");
+    			log.debug("Received " + inMessage.length() + " bytes of request [" + inMessage + "]");
     			byte[] outMsg = stripHeader(inMessage.getBytes());
     			socketToMQQueue.add(outMsg);
     		}
     	} catch (IOException e) {
-    		log.error(getName() + "| IOException: " + e.getMessage());
+    		log.error("IOException: " + e.getMessage());
     		e.printStackTrace();
     	} catch (IllegalStateException  e) {
-    		log.error(getName() + "| IllegalStateException: " + e.getMessage());
+    		log.error("IllegalStateException: " + e.getMessage());
     		e.printStackTrace();
     	} catch (NullPointerException e) {
-    		log.error(getName() + "| NullPointerException: " + e.getMessage());
+    		log.error("NullPointerException: " + e.getMessage());
     		e.printStackTrace();
     	} catch (Exception e) {
-    		log.error(getName() + "| Exception: " + e.getMessage());
+    		log.error("Exception: " + e.getMessage());
     		e.printStackTrace();
     	}
-    	peer.interrupt();
+    	
+    	peer.setShouldTerminate(true);
+    	log.debug("Exiting Socket Receiver");
     }
 }

@@ -3,7 +3,7 @@ package com.udp.bridge.mq;
 import java.util.concurrent.BlockingQueue;
 import com.udp.bridge.config.ApplicationConfig;
 
-public class MQSender extends Thread {
+public class MQSender implements Runnable {
     protected BlockingQueue<byte[]> socketToMQQueue;
     ApplicationConfig appConfig;
     
