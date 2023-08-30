@@ -6,15 +6,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.udp.bridge.utils.ApplicationUtils;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SocketReceiver extends Thread {
     private BlockingQueue<byte[]> socketToMQQueue;
     private Socket cliSock;
     private Thread peer;
+    
+    Logger log = LogManager.getLogger(SocketReceiver.class);
     
     public SocketReceiver(BlockingQueue<byte[]> socketToMQQueue, Socket cliSock, Thread peer) {
         this.socketToMQQueue = socketToMQQueue;

@@ -1,8 +1,6 @@
 package com.udp.bridge.mq;
 
 import java.util.concurrent.BlockingQueue;
-
-
 import com.udp.bridge.config.ApplicationConfig;
 
 

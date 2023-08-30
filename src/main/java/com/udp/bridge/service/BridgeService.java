@@ -7,6 +7,8 @@ import java.net.SocketException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,7 @@ import com.udp.bridge.mq.*;
 import com.udp.bridge.net.SocketReceiver;
 import com.udp.bridge.net.SocketSender;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class BridgeService {
 
@@ -27,6 +27,8 @@ public class BridgeService {
 	private ServerSocket svrSocket;
 	private BlockingQueue<byte[]> socketToMQQueue;
 	private BlockingQueue<byte[]> MQToSocketQueue;
+	
+	Logger log = LogManager.getLogger(BridgeService.class);
 	
 	public void bridgeServer() {
 		Socket cliSocket = null;
@@ -39,11 +41,11 @@ public class BridgeService {
 			svrSocket = new ServerSocket(port, 200);
 			svrSocket.setReuseAddress(true);
 			
-			MQReceiver mqReceiver = new IbmMQReceiver(MQToSocketQueue, appConfig);
-			MQSender mqSender = new IbmMQSender(socketToMQQueue, appConfig);
+		//	MQReceiver mqReceiver = new IbmMQReceiver(MQToSocketQueue, appConfig);
+		//	MQSender mqSender = new IbmMQSender(socketToMQQueue, appConfig);
 
-			mqReceiver.start();
-			mqSender.start();
+		//	mqReceiver.start();
+		//	mqSender.start();
 			
 			while(true) {
 				log.debug("Waiting for client on port " + svrSocket.getLocalPort());

@@ -6,14 +6,17 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.udp.bridge.utils.ApplicationUtils;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class SocketSender extends Thread {
     private BlockingQueue<byte[]> MQToSocketQueue;
     private Socket cliSock;
+
+    Logger log = LogManager.getLogger(SocketSender.class);
     
     public SocketSender(BlockingQueue<byte[]> MQToSocketQueue, Socket cliSock) {
         this.MQToSocketQueue = MQToSocketQueue;

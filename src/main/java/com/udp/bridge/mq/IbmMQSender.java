@@ -2,6 +2,9 @@ package com.udp.bridge.mq;
 
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.udp.bridge.config.ApplicationConfig;
 import com.udp.bridge.utils.ApplicationUtils;
 import com.ibm.mq.MQC;
@@ -13,11 +16,11 @@ import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.constants.MQConstants;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class IbmMQSender extends MQSender {
 
+	Logger log = LogManager.getLogger(IbmMQSender.class);
+	
 	public IbmMQSender(BlockingQueue<byte[]> socketToMQQueue, ApplicationConfig appConfig) {
 		super(socketToMQQueue, appConfig);
 	}
