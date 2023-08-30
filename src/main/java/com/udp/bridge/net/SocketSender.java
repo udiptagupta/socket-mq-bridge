@@ -37,11 +37,13 @@ public class SocketSender extends Thread {
             	if(cliSock.isConnected()) {
             		// Dequeue a message from MQToSocketQueue and send it back to the socket interface.
             		byte[] message = MQToSocketQueue.poll(500, TimeUnit.MILLISECONDS);
-            		String outString = ApplicationUtils.byteArrayToString(message);
-            		byte[] outMsg = addHeader(outString.getBytes());
-            		dos.write(outMsg);
-            		
-            		log.debug(getName() + "| Sent " + outString.length() + "  bytes of response [" + outString + "]");
+            		if(null != message) {
+	            		String outString = ApplicationUtils.byteArrayToString(message);
+	            		byte[] outMsg = addHeader(outString.getBytes());
+	            		dos.write(outMsg);
+	            		
+	            		log.debug(getName() + "| Sent " + outString.length() + "  bytes of response [" + outString + "]");
+            		}
             	}
 	        }
     	} catch (InterruptedException e) {
