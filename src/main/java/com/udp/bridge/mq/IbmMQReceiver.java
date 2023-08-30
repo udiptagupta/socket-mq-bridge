@@ -35,7 +35,7 @@ public class IbmMQReceiver extends MQReceiver {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public void run() {
 		
-		log.debug("Starting MQ receiver " + this.getName());
+		log.debug("Starting IBM MQ receiver ");
 		
 		MQQueue queue = null;
 		MQQueueManager qMgr = null;
@@ -56,7 +56,7 @@ public class IbmMQReceiver extends MQReceiver {
 			int openOptions = MQC.MQOO_INPUT_AS_Q_DEF | MQC.MQOO_FAIL_IF_QUIESCING;
             queue = qMgr.accessQueue(appConfig.getResponseQueue(), openOptions);
             
-            log.debug(getName() + "| Established MQ connection...");
+            log.debug("Established MQ connection...");
             
             MQGetMessageOptions getOptions = new MQGetMessageOptions();
             getOptions.options = CMQC.MQGMO_WAIT | CMQC.MQGMO_FAIL_IF_QUIESCING;
@@ -72,8 +72,8 @@ public class IbmMQReceiver extends MQReceiver {
 					byte[] message = inMsg.getBytes();
 					MQToSocketQueue.add(message);
 					String correlationId = new String(mqMessage.correlationId);
-					log.debug(getName() + "| CorrelationID: " + correlationId);
-					log.debug(getName() + " | Received " + inMsg.length() + " bytes from " + appConfig.getResponseQueue() + ": [" + inMsg + "]");
+					log.debug("CorrelationID: " + correlationId);
+					log.debug("Received " + inMsg.length() + " bytes from " + appConfig.getResponseQueue() + ": [" + inMsg + "]");
 				} catch (MQException e) {
 					if ( (e.completionCode == CMQC.MQCC_FAILED) &&
 					           (e.reasonCode == CMQC.MQRC_NO_MSG_AVAILABLE) )
@@ -82,25 +82,25 @@ public class IbmMQReceiver extends MQReceiver {
 					      }
 					      else
 					      {
-					         log.error(getName() + "| MQException: " + e.getLocalizedMessage());
-					         log.error(getName() + "| CC=" + e.completionCode + " : RC=" + e.reasonCode);
+					         log.error("MQException: " + e.getLocalizedMessage());
+					         log.error("CC=" + e.completionCode + " : RC=" + e.reasonCode);
 					         e.printStackTrace();
 					      }			
 				}
             }
 			
 		} catch (MQException e) {
-			log.error(getName() + "| MQException: " + e.getMessage());
+			log.error("MQException: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			log.error(getName() + "| Exception: " + e.getMessage());
+			log.error("Exception: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				queue.close();
 				qMgr.disconnect();
 			} catch (MQException e) {
-				log.error(getName() + "| MQException: " + e.getMessage());
+				log.error("MQException: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}

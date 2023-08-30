@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import com.udp.bridge.config.ApplicationConfig;
 
 
-public class MQReceiver extends Thread {
+public class MQReceiver implements Runnable {
     protected BlockingQueue<byte[]> MQToSocketQueue;
     ApplicationConfig appConfig;
     

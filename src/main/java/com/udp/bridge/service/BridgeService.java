@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,16 +38,19 @@ public class BridgeService {
 		socketToMQQueue = new LinkedBlockingQueue<>();
 		MQToSocketQueue = new LinkedBlockingQueue<>();
 		
-		int port = appConfig.getListenerPort().intValue();
 		try {
+
+			int port = appConfig.getListenerPort().intValue();
+			ExecutorService threadPool = Executors.newFixedThreadPool(4);
+			
 			svrSocket = new ServerSocket(port, 200);
 			svrSocket.setReuseAddress(true);
 			
 			MQReceiver mqReceiver = new IbmMQReceiver(MQToSocketQueue, appConfig);
 			MQSender mqSender = new IbmMQSender(socketToMQQueue, appConfig);
 
-			mqReceiver.start();
-			mqSender.start();
+			threadPool.execute(mqReceiver);		// Thread - 1
+			threadPool.execute(mqSender);		// Thread - 2
 			
 			while(true) {
 				log.debug("Waiting for client on port " + svrSocket.getLocalPort());
@@ -58,8 +63,8 @@ public class BridgeService {
 				SocketSender socketSender = new SocketSender(MQToSocketQueue, cliSocket);
 				SocketReceiver socketReceiver = new SocketReceiver(socketToMQQueue, cliSocket, socketSender);
 
-				socketReceiver.start();
-				socketSender.start();
+				threadPool.execute(socketReceiver);		// Thread - 3
+				threadPool.execute(socketSender);		// Thread - 4	(exits when socketReceiver terminates)
 			}
 		} catch (SocketException e) {
 			log.error("SocketException: "+ e.getMessage());

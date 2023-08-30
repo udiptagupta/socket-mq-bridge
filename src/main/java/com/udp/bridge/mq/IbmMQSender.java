@@ -36,7 +36,7 @@ public class IbmMQSender extends MQSender {
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public void run() {
 		
-		log.debug("Starting " + this.getName());
+		log.debug("Starting IBM MQ Sender");
 		MQQueue queue = null;
 		MQQueueManager qMgr = null;
 		
@@ -55,7 +55,7 @@ public class IbmMQSender extends MQSender {
 			int openOptions = MQC.MQOO_OUTPUT | MQC.MQOO_FAIL_IF_QUIESCING;
             queue = qMgr.accessQueue(appConfig.getRequestQueue(), openOptions);
             
-            log.debug(getName() + "| Established MQ connection...");
+            log.debug("Established MQ connection...");
             
             MQPutMessageOptions putOptions = new MQPutMessageOptions();
             
@@ -75,21 +75,21 @@ public class IbmMQSender extends MQSender {
             	mqMessage.writeString(strMsg);
                 
                 queue.put(mqMessage, putOptions);
-                log.debug(getName() + " | Send " + strMsg.length() + " bytes to " + appConfig.getResponseQueue() + ": [" + strMsg + "]");
+                log.debug("Send " + strMsg.length() + " bytes to " + appConfig.getResponseQueue() + ": [" + strMsg + "]");
             }
 			
 		} catch (MQException e) {
-			log.error(getName() + "| MQException: " + e.getMessage());
+			log.error("MQException: " + e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
-			log.error(getName() + "| Exception: " + e.getMessage());
+			log.error("Exception: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				queue.close();
 				qMgr.disconnect();
 			} catch (MQException e) {
-				log.error(getName() + "| MQException: " + e.getMessage());
+				log.error("MQException: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
